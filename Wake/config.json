@@ -1,12 +1,13 @@
-[
-  {
-    "NickName": "",
-    "IPAddress": "",
-    "MAC": ""
-  },
-  {
-    "NickName": "",
-    "IPAddress": "",
-    "MAC": ""
-  }
-]
+{
+  "BroadcastIP": "192.168.16.255",
+  "PCList": [
+    {
+      "NickName": "",
+      "MAC": ""
+    },
+    {
+      "NickName": "",
+      "MAC": ""
+    }
+  ]
+}

@@ -23,9 +23,9 @@
 		}
 
 		internal static void Usage() {
-			Info($"Usage:" +
-				$"\tlist - list all available PCs{NewLine}" +
-				$"\t[nickname] - wake PC with specific nickname");
+			Success($"Usage:" +
+				$"\tWake list - list all available PCs{NewLine}" +
+				$"\tWake [nickname] - wake PC with specific nickname");
 		}
 	}
 }

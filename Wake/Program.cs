@@ -11,7 +11,9 @@ namespace Wake {
 			try {
 				var command = args.FirstOrDefault(string.Empty).ToLower();
 
-				var pcs = Load();
+				var config = Load();
+				var broadcastIP = config.BroadcastIP;
+				var pcs = config.WakePCs;
 				var nicknames = pcs.Select(pc => pc.Nickname.ToLower()).ToHashSet();
 
 				if (args.Length == 0) {
@@ -32,7 +34,7 @@ namespace Wake {
 						break;
 					default:
 						var pc = pcs.First(pc => pc.Nickname.ToLower().Equals(command));
-						Wake(pc);
+						Wake(broadcastIP, pc);
 						break;
 				}
 			} catch (Exception) {
@@ -40,9 +42,9 @@ namespace Wake {
 			}
 		}
 
-		static List<WakePC> Load() {
+		static Config Load() {
 			try {
-				var pcs = JsonSerializer.Deserialize<List<WakePC>>(File.ReadAllText(ConfigPath));
+				var pcs = JsonSerializer.Deserialize<Config>(File.ReadAllText(ConfigPath));
 				return pcs;
 			} catch (Exception ex) {
 				Output.Error(ex.ToString());
@@ -51,14 +53,13 @@ namespace Wake {
 		}
 
 		static void List(List<WakePC> pcs) {
-			pcs.ForEach(pc => Output.Info($"{Output.NewLine}NickName: {pc.Nickname}{Output.NewLine}" +
-				$"IP: {pc.IPAddr}{Output.NewLine}" +
+			pcs.ForEach(pc => Output.Info($"NickName: {pc.Nickname}{Output.NewLine}" +
 				$"MAC: {pc.MAC}{Output.NewLine}"));
 		}
 
-		static void Wake(WakePC pc) {
+		static void Wake(string broadcastIP, WakePC pc) {
 			try {
-				var ipAddress = pc.IPAddr;
+				var ipAddress = broadcastIP;
 				var macAddress = pc.MAC;
 
 				var udpClient = new UdpClient() {
