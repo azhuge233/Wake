@@ -68,7 +68,7 @@ namespace Wake {
 				udpClient.Connect(IPAddress.Parse(ipAddress), new Random().Next(20000, 60000));
 
 				var magicPacket = Enumerable.Repeat(Convert.ToByte(255), 17 * 6).ToArray();
-				byte[] macAddrBytes = macAddress.Split(new char[] { ':', '-' }).Select(str => byte.Parse(str, NumberStyles.HexNumber)).ToArray();
+				byte[] macAddrBytes = macAddress.Split([':', '-']).Select(str => byte.Parse(str, NumberStyles.HexNumber)).ToArray();
 
 				for (int i = 1; i <= 16; i++)
 					for (int j = 0; j < 6; j++)
