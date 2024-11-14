@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text.Json;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 
 namespace Wake {
 	internal class Program {
@@ -18,7 +19,7 @@ namespace Wake {
 				var command = args.FirstOrDefault(string.Empty).ToLower();
 
 				var config = Load();
-				BroadcastIP = config.UseConfigBroadcastIP ? IPAddress.Parse(config.BroadcastIP) : GetBroadcastIP();
+				BroadcastIP = (config.UseConfigBroadcastIP || !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) ? IPAddress.Parse(config.BroadcastIP) : GetBroadcastIP();
 				var pcs = config.PCList;
 				var nicknames = pcs.Select(pc => pc.Nickname.ToLower()).ToHashSet();
 
@@ -46,7 +47,8 @@ namespace Wake {
 						Wake(pc);
 						break;
 				}
-			} catch (Exception) {
+			} catch (Exception ex) {
+				Output.Error(ex.Message);
 				return;
 			}
 		}
