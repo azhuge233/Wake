@@ -9,6 +9,7 @@ namespace Wake {
 		static readonly string ConfigPath = $"{AppDomain.CurrentDomain.BaseDirectory}config.json";
 
 		private static readonly string[] NicBlacklist = { "vethernet", "vmware" };
+		private static readonly string[] SupportCommands = { "list", "ip" };
 
 		static void Main(string[] args) {
 			try {
@@ -24,7 +25,7 @@ namespace Wake {
 					Output.Error("Invalid arguments.");
 					Output.Usage();
 					return;
-				} else if (command != "list" && !nicknames.Contains(command)) {
+				} else if (!SupportCommands.Contains(command) && !nicknames.Contains(command)) {
 					Output.Error($"No PC with nickname: {args.Last()}");
 					return;
 				}
@@ -32,6 +33,9 @@ namespace Wake {
 				switch (command) {
 					case "list":
 						List(pcs);
+						break;
+					case "ip":
+						ShowBroadcastIP();
 						break;
 					default:
 						var pc = pcs.First(pc => pc.Nickname.ToLower().Equals(command));
@@ -56,6 +60,10 @@ namespace Wake {
 		static void List(List<WakePC> pcs) {
 			pcs.ForEach(pc => Output.Info($"NickName: {pc.Nickname}{Output.NewLine}" +
 				$"MAC: {pc.MAC}{Output.NewLine}"));
+		}
+
+		static void ShowBroadcastIP() {
+			Output.Info(GetBroadcastIP().ToString());
 		}
 
 		static void Wake(WakePC pc) {

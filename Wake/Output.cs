@@ -25,6 +25,7 @@
 		internal static void Usage() {
 			Success($"Usage:" +
 				$"\tWake list - list all available PCs{NewLine}" +
+				$"\tWake ip - output broadcast ip{NewLine}" +
 				$"\tWake [nickname] - wake PC with specific nickname");
 		}
 	}
