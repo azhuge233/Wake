@@ -1,10 +1,14 @@
-[
-  {
-    "NickName": "",
-    "MAC": ""
-  },
-  {
-    "NickName": "",
-    "MAC": ""
-  }
-]
+{
+  "UseConfigBroadcastIP": false,
+  "BroadcastIP": "",
+  "PCList": [
+    {
+      "NickName": "",
+      "MAC": ""
+    },
+    {
+      "NickName": "",
+      "MAC": ""
+    }
+  ]
+}

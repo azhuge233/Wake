@@ -11,11 +11,15 @@ namespace Wake {
 		private static readonly string[] NicBlacklist = { "vethernet", "vmware" };
 		private static readonly string[] SupportCommands = { "list", "ip" };
 
+		private static IPAddress BroadcastIP;
+
 		static void Main(string[] args) {
 			try {
 				var command = args.FirstOrDefault(string.Empty).ToLower();
 
-				var pcs = Load();
+				var config = Load();
+				BroadcastIP = config.UseConfigBroadcastIP ? IPAddress.Parse(config.BroadcastIP) : GetBroadcastIP();
+				var pcs = config.PCList;
 				var nicknames = pcs.Select(pc => pc.Nickname.ToLower()).ToHashSet();
 
 				if (args.Length == 0) {
@@ -47,9 +51,9 @@ namespace Wake {
 			}
 		}
 
-		static List<WakePC> Load() {
+		static Config Load() {
 			try {
-				var pcs = JsonSerializer.Deserialize<List<WakePC>>(File.ReadAllText(ConfigPath));
+				var pcs = JsonSerializer.Deserialize<Config>(File.ReadAllText(ConfigPath));
 				return pcs;
 			} catch (Exception ex) {
 				Output.Error(ex.ToString());
@@ -63,18 +67,17 @@ namespace Wake {
 		}
 
 		static void ShowBroadcastIP() {
-			Output.Info(GetBroadcastIP().ToString());
+			Output.Info(BroadcastIP.ToString());
 		}
 
 		static void Wake(WakePC pc) {
 			try {
-				var broadcastIP = GetBroadcastIP();
 				var macAddress = pc.MAC;
 
 				var udpClient = new UdpClient() {
 					EnableBroadcast = true
 				};
-				udpClient.Connect(broadcastIP, 7);
+				udpClient.Connect(BroadcastIP, 7);
 
 				var magicPacket = BuildPacket(pc.MAC);
 
